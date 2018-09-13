@@ -42,12 +42,13 @@
 
         $(document).ready(function () {
             for (let x = -2; x <= 2; x += 0.5) {
-                $("#x").append('<option>' + x + '</option>');
+                $("#x").append('<option' + (x === 0 ? ' selected="selected"' : "") + '>' + x + '</option>');
             }
         });
     </script>
 
-    <title>$Title$</title>
+    <link rel="shortcut icon" href="images/skull.ico" sizes="">
+    <title>Программирование Интернет-приложений</title>
 </head>
 <body class="container body-content">
 <div style="margin-bottom: 10px"></div>

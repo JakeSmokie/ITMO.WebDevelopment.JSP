@@ -55,7 +55,7 @@
 
     <servlet-mapping>
         <servlet-name>AreaCheckServlet666</servlet-name>
-        <url-pattern>/checkrandom</url-pattern>
+        <url-pattern>/checkfake</url-pattern>
     </servlet-mapping>
 
     <filter>
@@ -68,6 +68,6 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>Filter</filter-name>
-        <url-pattern>/checkrandom</url-pattern>
+        <url-pattern>/checkfake</url-pattern>
     </filter-mapping>
 </web-app>
