@@ -12,8 +12,20 @@
             crossorigin="anonymous"></script>
 
     <script src="js/fields_checking.js"></script>
-    <script src="js/submit.js"></script>
 
+    <script>
+        async function submit() {
+            if (!checkFields(document.forms[0])) {
+                return;
+            }
+
+            const params = $("#form").serialize();
+            const result = await $.get("control?" + params, "", "json");
+
+            console.log(result.result);
+            // $("#results").append("<p>" + result.result + "</p>");
+        }
+    </script>
     <script>
         let prevValue = false;
 
@@ -31,10 +43,6 @@
         $(document).ready(function () {
             for (let x = -2; x <= 2; x += 0.5) {
                 $("#x").append('<option>' + x + '</option>');
-            }
-
-            for (let r = 1; r <= 5; r += 1) {
-                $("#r").append('<option>' + r + '</option>');
             }
         });
     </script>
@@ -64,6 +72,11 @@
                 <div class="form-group col-sm" style="text-align: center">
                     <label>R</label>
                     <select class="form-control" id="r" name="r">
+                        <% for (int i = 1; i <= 5; i++) { %>
+                        <option>
+                            <%=i%>
+                        </option>
+                        <%} %>
                     </select>
                 </div>
             </div>

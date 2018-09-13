@@ -16,18 +16,17 @@ public class AreaCheckerFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) {
         final val httpReq = (HttpServletRequest) req;
 
-        if (!checkParameters(httpReq.getParameterMap())) {
+        if (!areParametersSet(httpReq.getParameterMap())) {
             ((HttpServletResponse) resp).sendError(400, "Not all parameters are set");
-
             return;
         }
 
         chain.doFilter(req, resp);
     }
 
-    private boolean checkParameters(Map<String, String[]> parameters) {
-        return parameters.containsKey("x") &&
-                parameters.containsKey("y") &&
-                parameters.containsKey("r");
+    private boolean areParametersSet(Map<String, String[]> req) {
+        return req.get("x") != null &&
+                req.get("y") != null &&
+                req.get("r") != null;
     }
 }

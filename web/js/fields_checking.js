@@ -1,12 +1,3 @@
-function printResult(result) {
-    if (!result.success) {
-        return;
-    }
-
-    $("#results")
-        .append("<p>" + result.result + "</p>");
-}
-
 function checkFields(form) {
     return checkY(form.y.value);
 }

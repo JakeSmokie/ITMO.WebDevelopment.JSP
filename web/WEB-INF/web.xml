@@ -15,10 +15,47 @@
     <servlet>
         <servlet-name>AreaCheckServlet1802</servlet-name>
         <servlet-class>ru.jakesmokie.weblab2.servlets.AreaCheckServlet</servlet-class>
+
+        <init-param>
+            <param-name>area-checker</param-name>
+            <param-value>ru.jakesmokie.weblab2.areacheckers.AreaCheckerVar1802</param-value>
+        </init-param>
+        <init-param>
+            <param-name>parameters-parser</param-name>
+            <param-value>ru.jakesmokie.weblab2.areacheckers.AreaCheckerParametersParser</param-value>
+        </init-param>
+        <init-param>
+            <param-name>constraints-checker</param-name>
+            <param-value>ru.jakesmokie.weblab2.areacheckers.AreaCheckerConstraintsCheckerVar1802</param-value>
+        </init-param>
     </servlet>
+
     <servlet-mapping>
         <servlet-name>AreaCheckServlet1802</servlet-name>
         <url-pattern>/check</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AreaCheckServlet666</servlet-name>
+        <servlet-class>ru.jakesmokie.weblab2.servlets.AreaCheckServlet</servlet-class>
+
+        <init-param>
+            <param-name>area-checker</param-name>
+            <param-value>ru.jakesmokie.weblab2.areacheckers.AreaCheckerVar666</param-value>
+        </init-param>
+        <init-param>
+            <param-name>parameters-parser</param-name>
+            <param-value>ru.jakesmokie.weblab2.areacheckers.AreaCheckerParametersParser</param-value>
+        </init-param>
+        <init-param>
+            <param-name>constraints-checker</param-name>
+            <param-value>ru.jakesmokie.weblab2.areacheckers.AreaCheckerConstraintsCheckerAnyValues</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AreaCheckServlet666</servlet-name>
+        <url-pattern>/checkrandom</url-pattern>
     </servlet-mapping>
 
     <filter>
@@ -28,5 +65,9 @@
     <filter-mapping>
         <filter-name>Filter</filter-name>
         <url-pattern>/check</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>Filter</filter-name>
+        <url-pattern>/checkrandom</url-pattern>
     </filter-mapping>
 </web-app>

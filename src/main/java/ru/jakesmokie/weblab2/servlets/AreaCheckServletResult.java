@@ -7,5 +7,4 @@ import ru.jakesmokie.weblab2.areacheckers.AreaCheckerParameters;
 public class AreaCheckServletResult {
     private AreaCheckerParameters parameters;
     private boolean result;
-    private boolean success;
 }

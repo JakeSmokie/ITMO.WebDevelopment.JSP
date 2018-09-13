@@ -12,4 +12,11 @@ public class AreaCheckerConstraintsCheckerVar1802 extends AbstractAreaCheckerCon
                 validRValues.contains(p.getR()) &&
                 p.getY() > -5 && p.getY() < 3;
     }
+
+    @Override
+    public String toString() {
+        return "X: {-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0}" +
+                "Y: (-5, 3)" +
+                "R: {1.0, 2.0, 3.0, 4.0, 5.0}";
+    }
 }

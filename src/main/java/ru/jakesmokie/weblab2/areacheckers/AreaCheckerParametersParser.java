@@ -17,7 +17,7 @@ public class AreaCheckerParametersParser extends AbstractAreaCheckerParametersPa
                     Double.parseDouble(y),
                     Double.parseDouble(r)
             );
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return null;
         }
     }
