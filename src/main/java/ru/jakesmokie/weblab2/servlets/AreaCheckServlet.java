@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AreaCheckServlet extends HttpServlet {
-    private final String historyAttribute = "history";
 
     private DateTimeFormatter dateTimeFormatter;
     private AbstractAreaChecker areaChecker;
@@ -26,7 +25,7 @@ public class AreaCheckServlet extends HttpServlet {
     private AbstractAreaCheckerConstraintsChecker constraintsChecker;
     private int maxHistorySize;
 
-    private Gson gson = new GsonBuilder()
+    private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .create();
 
@@ -78,6 +77,7 @@ public class AreaCheckServlet extends HttpServlet {
     private void addResultToHistory(HttpServletRequest req, AreaCheckServletResult result) {
         final val session = req.getSession();
 
+        String historyAttribute = "history";
         synchronized (req.getSession()) {
             if (session.getAttribute(historyAttribute) == null) {
                 session.setAttribute(historyAttribute, new ConcurrentLinkedQueue<AreaCheckServletResult>());

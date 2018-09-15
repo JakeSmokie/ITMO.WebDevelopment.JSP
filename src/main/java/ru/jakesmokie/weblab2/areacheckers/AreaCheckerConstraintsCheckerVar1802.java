@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AreaCheckerConstraintsCheckerVar1802 extends AbstractAreaCheckerConstraintsChecker {
-    private static List<Double> validRValues = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
+    private static final List<Double> validRValues = Arrays.asList(1.0, 2.0, 3.0, 4.0, 5.0);
 
     public boolean checkConstraints(AreaCheckerParameters p) {
         return p.getX() > -10 && p.getX() < 10 &&
