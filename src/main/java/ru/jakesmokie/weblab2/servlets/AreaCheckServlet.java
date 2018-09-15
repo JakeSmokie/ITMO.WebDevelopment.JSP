@@ -13,11 +13,21 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Collections.synchronizedList;
 
 public class AreaCheckServlet extends HttpServlet {
+    private final String historyAttribute = "history";
+
+    private DateTimeFormatter dateTimeFormatter;
     private AbstractAreaChecker areaChecker;
     private AbstractAreaCheckerParametersParser parametersParser;
     private AbstractAreaCheckerConstraintsChecker constraintsChecker;
+    private int maxHistorySize;
 
     private Gson gson = new GsonBuilder()
             .setPrettyPrinting()
@@ -29,6 +39,8 @@ public class AreaCheckServlet extends HttpServlet {
         final val areaCheckerName = config.getInitParameter("area-checker");
         final val parametersParserName = config.getInitParameter("parameters-parser");
         final val constrainstsCheckerName = config.getInitParameter("constraints-checker");
+        final val format = config.getInitParameter("datetime-format");
+        final val historySize = config.getInitParameter("max-history-size");
 
         try {
             areaChecker = ((AbstractAreaChecker) createClassInstanceByName(areaCheckerName));
@@ -38,37 +50,72 @@ public class AreaCheckServlet extends HttpServlet {
             throw new Exception("Check web.xml and specify " +
                     "area-checker, parameters-parser, constraints-checker classes", e);
         }
+
+        try {
+            dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        } catch (Exception e) {
+            throw new Exception("Please provide date time format in web.xml", e);
+        }
+
+        try {
+            maxHistorySize = Integer.parseInt(historySize);
+        } catch (Exception e) {
+            throw new Exception("Please provide max history size in web.xml", e);
+        }
     }
 
     @SneakyThrows
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        final val session = req.getSession();
-        final val writer = resp.getWriter();
-        resp.setContentType("application/json");
-
-        final val parameters =
-                parametersParser.parseParameters(req.getParameterMap());
-
+        final val parameters = parametersParser.parseParameters(req.getParameterMap());
         final val result = getResult(parameters);
 
+        sendResponse(resp, result);
+
         if (result == null) {
-            resp.sendError(400, "Parameters are not valid for constraints " + constraintsChecker.toString());
             return;
         }
 
-        writer.println(gson.toJson(result));
+        addResultToHistory(req, result);
+    }
+
+    private void addResultToHistory(HttpServletRequest req, AreaCheckServletResult result) {
+        final val session = req.getSession();
+
+        synchronized (req.getSession()) {
+            if (session.getAttribute(historyAttribute) == null) {
+                session.setAttribute(historyAttribute, synchronizedList(new ArrayList<AreaCheckServletResult>()));
+            }
+        }
+
+        final val history = (List<AreaCheckServletResult>) session.getAttribute(historyAttribute);
+
+        if (history.size() < maxHistorySize) {
+            history.add(result);
+        }
     }
 
     private AreaCheckServletResult getResult(AreaCheckerParameters parameters) {
-        final val result = new AreaCheckServletResult();
-        result.setParameters(parameters);
-
         if (parameters == null || !constraintsChecker.checkConstraints(parameters)) {
             return null;
         }
 
-        result.setResult(areaChecker.IsPointInArea(parameters));
-        return result;
+        return AreaCheckServletResult.builder()
+                .parameters(parameters)
+                .isPointInArea(areaChecker.IsPointInArea(parameters))
+                .date(LocalDateTime.now().format(dateTimeFormatter))
+                .build();
+    }
+
+    @SneakyThrows
+    private void sendResponse(HttpServletResponse resp, AreaCheckServletResult result) {
+        if (result == null) {
+            resp.sendError(400, "Parameters are not valid for constraints " +
+                    constraintsChecker.toString());
+            return;
+        }
+
+        resp.setContentType("application/json");
+        resp.getWriter().println(gson.toJson(result));
     }
 
     @SneakyThrows

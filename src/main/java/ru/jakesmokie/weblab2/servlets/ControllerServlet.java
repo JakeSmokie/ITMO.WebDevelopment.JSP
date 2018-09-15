@@ -26,7 +26,7 @@ public class ControllerServlet extends HttpServlet {
             return;
         }
 
-        context.getRequestDispatcher("/")
+        context.getRequestDispatcher("/content.jsp")
                 .forward(req, resp);
     }
 

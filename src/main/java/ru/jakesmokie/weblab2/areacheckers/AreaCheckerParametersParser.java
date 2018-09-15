@@ -12,9 +12,12 @@ public class AreaCheckerParametersParser extends AbstractAreaCheckerParametersPa
         final val r = params.get("r")[0];
 
         try {
+            double x1 = Double.parseDouble(x);
+            double y1 = Double.parseDouble(y);
+
             return new AreaCheckerParameters(
-                    Double.parseDouble(x),
-                    Double.parseDouble(y),
+                    x1 == -0.0 ? 0.0 : x1,
+                    y1 == -0.0 ? 0.0 : y1,
                     Double.parseDouble(r)
             );
         } catch (NumberFormatException | NullPointerException e) {
