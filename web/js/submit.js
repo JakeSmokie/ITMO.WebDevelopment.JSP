@@ -18,15 +18,40 @@ function submit() {
     addPoint(x, y);
 }
 
+let stopped = true;
+
 async function checkAllChart() {
-    $('#checkallbutton').addClass('disabled');
+    const $button = $('#checkallbutton');
+
+    if (!stopped) {
+        stopped = true;
+
+        $button.addClass('btn-primary');
+        $button.removeClass('btn-danger');
+        $button.html('Проверить весь график');
+
+        return;
+    }
+
+    $button.removeClass('btn-primary');
+    $button.addClass('btn-danger');
+    $button.html('Пристановить проверку');
 
     const coords = Array.from(generateCoordinates())
         .sort(sortByRadius);
 
+    stopped = false;
     for (let x of coords) {
         await addPoint(x.x, x.y);
+
+        while (stopped) {
+            await sleep(100);
+        }
     }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function* generateCoordinates() {
