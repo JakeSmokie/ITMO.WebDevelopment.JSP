@@ -1,3 +1,12 @@
+$(document).ready(() => {
+    $("#checkallbutton").unbind('click').click(() => {
+        checkAllChart();
+    });
+    $("#submitbutton").unbind('click').click(() => {
+        submit();
+    });
+});
+
 function submit() {
     if (!checkFields(document.forms[0])) {
         return;

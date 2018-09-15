@@ -19,6 +19,9 @@ function loadChart() {
     _chart.click(e => {
         chartClick(e);
     });
+
+    $('#checkallbutton').mousedown(() => false);
+    $('#submitbutton').mousedown(() => false);
 }
 
 function updateRadiusValue() {

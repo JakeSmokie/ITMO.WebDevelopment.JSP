@@ -2,6 +2,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Comparator" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.concurrent.ConcurrentLinkedQueue" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
@@ -32,91 +33,89 @@
 <body class="container body-content">
 <h4 style="text-align: center">Айгузин Иван Олегович | P3218 | Вариант 1802</h4>
 <hr/>
-<div style="text-align: center; margin-bottom: 20px" onmousedown="return false">
-    <canvas id="chart" class="border border-dark" width="500px" height="500px">
-        Обновите Ваш браузер, ибо он не поддерживает canvas.
-    </canvas>
-</div>
-<div>
-    <form action="control" method="get" onsubmit="return false;" id="form">
-        <div class="row disable-selection">
-            <div class="form-group col-sm" style="text-align: center">
-                <label>X</label>
-                <select class="form-control" id="x" name="x">
-                </select>
+<div class="row">
+    <jsp:include page="canvas.jsp"/>
+    <div class="col-sm">
+        <form action="control" method="get" onsubmit="return false;" id="form">
+            <div class="row disable-selection">
+                <div class="form-group col-sm" style="text-align: center">
+                    <label>X</label>
+                    <select class="form-control" id="x" name="x">
+                    </select>
+                </div>
+                <div class="form-group col-sm" style="text-align: center">
+                    <label>Y</label>
+                    <input type="text" maxlength="10" class="form-control is-invalid" id="y" name="y"
+                           placeholder="(-5, 3)"
+                           oninput="updateY()">
+                </div>
+                <div class="form-group col-sm" style="text-align: center">
+                    <label>R</label>
+                    <select class="form-control" id="r" name="r">
+                        <% for (int i = 1; i <= 5; i++) { %>
+                        <option <%=i == 5 ? "selected=\"selected\"" : ""%>>
+                            <%=i%>
+                        </option>
+                        <%} %>
+                    </select>
+                </div>
             </div>
-            <div class="form-group col-sm" style="text-align: center">
-                <label>Y</label>
-                <input type="text" maxlength="10" class="form-control is-invalid" id="y" name="y"
-                       placeholder="(-5, 3)"
-                       oninput="updateField(this)">
+            <div style="text-align: center" class="disable-selection">
+                <a href="javascript:void(0)" class="btn btn-primary mb-2 align-bottom" id="submitbutton">
+                    Проверить точку</a>
+                <a href="javascript:void(0)" class="btn btn-secondary mb-2 align-bottom" id="checkallbutton">
+                    Проверить весь график</a>
             </div>
-            <div class="form-group col-sm" style="text-align: center">
-                <label>R</label>
-                <select class="form-control" id="r" name="r">
-                    <% for (int i = 1; i <= 5; i++) { %>
-                    <option <%=i == 5 ? "selected=\"selected\"" : ""%>>
-                        <%=i%>
-                    </option>
-                    <%} %>
-                </select>
-            </div>
-        </div>
-        <div style="text-align: center">
-            <a href="javascript:submit();" class="btn btn-primary mb-2 align-bottom" onmousedown="return false">
-                Проверить точку</a>
-            <a href="javascript:checkAllChart();" class="btn btn-secondary mb-2 align-bottom" id="checkallbutton"
-               onmousedown="return false">
-                Проверить весь график</a>
-        </div>
-        <hr/>
-    </form>
-    <table class="table table-sm table-hover">
-        <thead>
-        <tr>
-            <th scope="col">Время исчисления</th>
-            <th scope="col">X</th>
-            <th scope="col">Y</th>
-            <th scope="col">R</th>
-            <th scope="col">Попадание</th>
-        </tr>
-        </thead>
-        <tbody id="results">
-        <%
-            if (session == null) {
-                return;
-            }
+        </form>
+        <table class="table table-sm table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Время исчисления</th>
+                <th scope="col">X</th>
+                <th scope="col">Y</th>
+                <th scope="col">R</th>
+                <th scope="col">Попадание</th>
+            </tr>
+            </thead>
+            <tbody id="results">
+            <%
+                if (session == null) {
+                    return;
+                }
 
-            List<AreaCheckServletResult> history =
-                    (List<AreaCheckServletResult>) session.getAttribute("history");
+                List<AreaCheckServletResult> history;
 
-            if (history == null) {
-                history = new ArrayList<>();
-            }
+                if (session.getAttribute("history") == null) {
+                    history = new ArrayList<>();
+                } else {
+                    history = new ArrayList<>((ConcurrentLinkedQueue<AreaCheckServletResult>)
+                            session.getAttribute("history"));
+                }
 
-            history.sort(Comparator.comparing(AreaCheckServletResult::getDate).reversed());
-        %>
-        <% for (final AreaCheckServletResult entry : history) { %>
-        <tr>
-            <td>
-                <%= entry.getDate() %>
-            </td>
-            <td>
-                <%= entry.getParameters().getX() %>
-            </td>
-            <td>
-                <%= entry.getParameters().getY() %>
-            </td>
-            <td>
-                <%= entry.getParameters().getR() %>
-            </td>
-            <td>
-                <%= entry.isPointInArea() ? "Да" : "Нет" %>
-            </td>
-        </tr>
-        <%}%>
-        </tbody>
-    </table>
+                history.sort(Comparator.comparing(AreaCheckServletResult::getDate).reversed());
+            %>
+            <% for (final AreaCheckServletResult entry : history) { %>
+            <tr>
+                <td>
+                    <%= entry.getDate() %>
+                </td>
+                <td>
+                    <%= entry.getParameters().getX() %>
+                </td>
+                <td>
+                    <%= entry.getParameters().getY() %>
+                </td>
+                <td>
+                    <%= entry.getParameters().getR() %>
+                </td>
+                <td>
+                    <%= entry.isPointInArea() ? "Да" : "Нет" %>
+                </td>
+            </tr>
+            <%}%>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

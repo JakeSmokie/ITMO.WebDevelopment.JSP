@@ -15,10 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Collections.synchronizedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AreaCheckServlet extends HttpServlet {
     private final String historyAttribute = "history";
@@ -83,15 +80,18 @@ public class AreaCheckServlet extends HttpServlet {
 
         synchronized (req.getSession()) {
             if (session.getAttribute(historyAttribute) == null) {
-                session.setAttribute(historyAttribute, synchronizedList(new ArrayList<AreaCheckServletResult>()));
+                session.setAttribute(historyAttribute, new ConcurrentLinkedQueue<AreaCheckServletResult>());
             }
         }
 
-        final val history = (List<AreaCheckServletResult>) session.getAttribute(historyAttribute);
+        final val history = (ConcurrentLinkedQueue<AreaCheckServletResult>)
+                session.getAttribute(historyAttribute);
 
-        if (history.size() < maxHistorySize) {
-            history.add(result);
+        if (history.size() > maxHistorySize) {
+            history.poll();
         }
+
+        history.add(result);
     }
 
     private AreaCheckServletResult getResult(AreaCheckerParameters parameters) {

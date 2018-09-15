@@ -1,4 +1,4 @@
-package test;
+package ru.jakesmokie.weblab2.tests;
 
 import lombok.val;
 import org.junit.Assert;
@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import main.java.ru.jakesmokie.areacheckers.AreaCheckerParameters;
-import main.java.ru.jakesmokie.areacheckers.AreaCheckerVar1802;
+import ru.jakesmokie.weblab2.areacheckers.AreaCheckerParameters;
+import ru.jakesmokie.weblab2.areacheckers.AreaCheckerVar1802;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -2,6 +2,8 @@ package ru.jakesmokie.weblab2.areacheckers;
 
 import lombok.val;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class AreaCheckerParametersParser extends AbstractAreaCheckerParametersParser {
@@ -15,6 +17,9 @@ public class AreaCheckerParametersParser extends AbstractAreaCheckerParametersPa
             double x1 = Double.parseDouble(x);
             double y1 = Double.parseDouble(y);
 
+            x1 = truncateDouble(x1);
+            y1 = truncateDouble(y1);
+
             return new AreaCheckerParameters(
                     x1 == -0.0 ? 0.0 : x1,
                     y1 == -0.0 ? 0.0 : y1,
@@ -23,5 +28,11 @@ public class AreaCheckerParametersParser extends AbstractAreaCheckerParametersPa
         } catch (NumberFormatException | NullPointerException e) {
             return null;
         }
+    }
+
+    private double truncateDouble(double value) {
+        return BigDecimal.valueOf(value)
+                .setScale(4, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 }

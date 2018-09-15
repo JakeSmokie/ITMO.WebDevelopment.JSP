@@ -1,14 +1,24 @@
 let prevValue = false;
 
-function updateField(field) {
-    const check = checkY(field.value);
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+$(document).ready(async () => {
+    updateY();
+});
+
+function updateY() {
+    const $y = $("#y");
+
+    const check = checkY($y.val());
 
     if (check === prevValue) {
         return;
     }
 
-    $(field).toggleClass("is-invalid");
-    $(field).toggleClass("is-valid");
+    $y.toggleClass("is-invalid");
+    $y.toggleClass("is-valid");
 
     prevValue = !prevValue;
 }
