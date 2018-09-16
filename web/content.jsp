@@ -79,17 +79,14 @@
             </thead>
             <tbody id="results">
             <%
-                if (session == null) {
-                    return;
-                }
-
                 List<AreaCheckServletResult> history;
+                final ServletContext context = request.getServletContext();
 
-                if (session.getAttribute("history") == null) {
+                if (context.getAttribute("history") == null) {
                     history = new ArrayList<>();
                 } else {
                     history = new ArrayList<>((ConcurrentLinkedQueue<AreaCheckServletResult>)
-                            session.getAttribute("history"));
+                            context.getAttribute("history"));
                 }
 
                 history.sort(Comparator.comparing(AreaCheckServletResult::getDate).reversed());

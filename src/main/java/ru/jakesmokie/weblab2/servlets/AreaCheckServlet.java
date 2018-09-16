@@ -75,17 +75,15 @@ public class AreaCheckServlet extends HttpServlet {
     }
 
     private void addResultToHistory(HttpServletRequest req, AreaCheckServletResult result) {
-        final val session = req.getSession();
+        final val context = req.getServletContext();
 
         String historyAttribute = "history";
-        synchronized (req.getSession()) {
-            if (session.getAttribute(historyAttribute) == null) {
-                session.setAttribute(historyAttribute, new ConcurrentLinkedQueue<AreaCheckServletResult>());
-            }
+        if (context.getAttribute(historyAttribute) == null) {
+            context.setAttribute(historyAttribute, new ConcurrentLinkedQueue<AreaCheckServletResult>());
         }
 
         final val history = (ConcurrentLinkedQueue<AreaCheckServletResult>)
-                session.getAttribute(historyAttribute);
+                context.getAttribute(historyAttribute);
 
         if (history.size() > maxHistorySize) {
             history.poll();
