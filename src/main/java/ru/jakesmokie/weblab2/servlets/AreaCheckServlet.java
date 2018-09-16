@@ -8,6 +8,7 @@ import ru.jakesmokie.weblab2.areacheckers.AbstractAreaChecker;
 import ru.jakesmokie.weblab2.areacheckers.AbstractAreaCheckerConstraintsChecker;
 import ru.jakesmokie.weblab2.areacheckers.AbstractAreaCheckerParametersParser;
 import ru.jakesmokie.weblab2.areacheckers.AreaCheckerParameters;
+import ru.jakesmokie.weblab2.beans.HistoryBean;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AreaCheckServlet extends HttpServlet {
 
@@ -76,22 +76,18 @@ public class AreaCheckServlet extends HttpServlet {
 
     private void addResultToHistory(HttpServletRequest req, AreaCheckServletResult result) {
         final val session = req.getSession();
+        HistoryBean history = (HistoryBean) session.getAttribute("history");
 
-        String historyAttribute = "history";
-        synchronized (req.getSession()) {
-            if (session.getAttribute(historyAttribute) == null) {
-                session.setAttribute(historyAttribute, new ConcurrentLinkedQueue<AreaCheckServletResult>());
-            }
+        if (history == null) {
+            history = new HistoryBean();
+            session.setAttribute("history", history);
         }
 
-        final val history = (ConcurrentLinkedQueue<AreaCheckServletResult>)
-                session.getAttribute(historyAttribute);
-
-        if (history.size() > maxHistorySize) {
-            history.poll();
+        if (history.getHistory().size() > maxHistorySize) {
+            history.getHistory().poll();
         }
 
-        history.add(result);
+        history.getHistory().add(result);
     }
 
     private AreaCheckServletResult getResult(AreaCheckerParameters parameters) {

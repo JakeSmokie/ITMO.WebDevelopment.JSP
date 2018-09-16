@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
-  <artifact type="war" name="weblab2">
+  <artifact type="exploded-war" name="weblab2">
     <output-path>$PROJECT_DIR$/out/artifacts/weblab2</output-path>
-    <root id="archive" name="weblab2.war">
+    <root id="root">
       <element id="javaee-facet-resources" facet="WebLab2/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">

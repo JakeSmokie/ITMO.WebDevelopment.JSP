@@ -7,6 +7,14 @@
 }
 
 body {
-    padding-bottom: 10px;
+    padding-bottom: 0;
+    padding-top: 0;
+    height: 100%;
+}
+
+body > div {
     padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: white;
+    height: 100%;
 }
